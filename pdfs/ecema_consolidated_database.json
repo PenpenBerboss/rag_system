@@ -1,0 +1,491 @@
+{
+  "ecole_generale": {
+    "nom": "ECEMA - École Supérieure de Commerce et de Management",
+    "description": "École française d'excellence en commerce et management, membre du Collège de Paris et pionnière de l'alternance en région Rhône-Alpes. ECEMA se distingue par son approche pédagogique professionnalisante et son fort ancrage international.",
+    "fondation": "2003",
+    "statut_legal": "Établissement d'enseignement supérieur privé, reconnu par l'État français, membre du Collège de Paris",
+    "groupe": "Collège de Paris",
+    "site_web_officiel": "https://www.ecema.fr/",
+    "statistiques_globales": {
+      "total_etudiants_2024": "1600 Ecémaliens",
+      "nombre_campus_france": 7,
+      "nombre_campus_international": 3,
+      "formations_disponibles": "Plus de 22 cursus certifiés",
+      "mobilite_internationale": "Plus de 100 étudiants en mobilité internationale par an"
+    }
+  },
+  "reconnaissance_academique": {
+    "diplomes_reconnus": "Diplômes français reconnus par l'État (licences, masters) garantissant la qualité et la valeur de la formation sur le marché du travail français et international",
+    "titres_certifies": "Nombreux titres certifiés au RNCP (Répertoire National des Certifications Professionnelles) de niveaux 6 (Bac+3/4) et 7 (Bac+5)",
+    "accreditations": [
+      "Conformité aux exigences du cadre européen de l'enseignement supérieur (ECTS)",
+      "Membre du Collège de Paris",
+      "Diplômes reconnus internationalement"
+    ]
+  },
+  "campus_par_pays": {
+    "france": {
+      "description": "7 campus français avec Lyon comme campus principal et pionnier de l'alternance",
+      "liste_campus": [
+        {
+          "ville": "Lyon",
+          "statut": "Campus principal",
+          "focus": "Centre historique de l'alternance, siège social"
+        },
+        {
+          "ville": "Saint-Étienne",
+          "focus": "Spécialisations en management et gestion"
+        },
+        {
+          "ville": "Clermont-Ferrand",
+          "focus": "Proximité avec le tissu économique local"
+        },
+        {
+          "ville": "Bourges",
+          "focus": "Campus à taille humaine, approche personnalisée"
+        },
+        {
+          "ville": "Valence",
+          "focus": "Développement commercial et marketing"
+        },
+        {
+          "ville": "Grenoble",
+          "focus": "Innovation et management des projets"
+        },
+        {
+          "ville": "Limoges",
+          "focus": "Territoire dynamique pour l'alternance"
+        }
+      ],
+      "frais_scolarite": {
+        "formation_initiale": {
+          "bachelor_1_2": "À partir de 5 390 € par an",
+          "bachelor_3": "À partir de 6 390 € par an",
+          "master_1_2": "À partir de 6 890 € par an"
+        },
+        "formation_alternance": "Frais intégralement pris en charge par l'entreprise d'accueil. L'étudiant perçoit une rémunération."
+      },
+      "avantages_specifiques": {
+        "alternance_pionniere": "Premier établissement de la région Rhône-Alpes à proposer l'intégralité des cursus en alternance",
+        "reseau_entreprises": "Solide réseau d'entreprises partenaires pour stages et alternance",
+        "accompagnement_individualise": "Service dédié à la recherche d'alternance avec accompagnement personnalisé"
+      }
+    },
+    "cameroun": {
+      "description": "Présence à Yaoundé avec campus propre et partenariat à Douala via Keyce Academy",
+      "campus": {
+        "yaounde": {
+          "nom": "Campus ECEMA Yaoundé",
+          "statut": "9ème campus ECEMA en France et à l'international",
+          "date_ouverture": "Septembre 2023",
+          "localisation": {
+            "ville": "Yaoundé",
+            "pays": "Cameroun",
+            "quartier": "Khezema Ouest, Essos",
+            "accessibilite": "Zone stratégique bien desservie par les transports en commun, à proximité de toutes les commodités essentielles (commerces, banques, etc.)"
+          },
+          "infrastructures": {
+            "salles_classe": 6,
+            "cafeteria": true,
+            "espaces_communs": true,
+            "bibliotheque": "Espace de documentation et de travail",
+            "cadre": "Très beau quartier résidentiel, offrant un cadre de vie agréable et propice aux études"
+          },
+          "contact": {
+            "adresse_physique": "Yaoundé, Khezema Ouest, Essos",
+            "telephone": "+237 681 86 58 66",
+            "email": "yaounde@ecema.fr",
+            "facebook": "Ecema Cameroun",
+            "followers": "Plus de 200 likes, communauté active"
+          }
+        },
+        "douala": {
+          "nom": "Campus partenaire Douala",
+          "statut": "Campus en partenariat avec Keyce Academy",
+          "localisation": {
+            "ville": "Douala",
+            "pays": "Cameroun",
+            "details": "Campus situé à un emplacement stratégique au cœur de Douala"
+          },
+          "partenariat": "Keyce Academy - membre du Collège de Paris, offrant un accès élargi aux formations du groupe ECEMA"
+        }
+      },
+      "frais_scolarite": {
+        "note": "Coût considérablement réduit par rapport à la France, rendant la formation accessible localement",
+        "estimation_indicative": "Quelques centaines de milliers de Francs CFA à environ 1,5 million de Francs CFA par an selon le cycle",
+        "modalites_paiement": "Possibilité d'échelonnement des paiements, facilités au cas par cas"
+      },
+      "avantages_specifiques": {
+        "diplome_francais_local": "Obtention d'un diplôme français reconnu sans quitter le Cameroun",
+        "cout_reduit": "Frais de scolarité significativement inférieurs aux études en France",
+        "proximite_culturelle": "Environnement francophone adapté au contexte culturel local",
+        "opportunites_mobilite": "Possibilité privilégiée de poursuivre en France ou dans d'autres campus internationaux après un ou plusieurs cycles au Cameroun",
+        "alternance_locale": "Accompagnement pour trouver des entreprises d'accueil locales avec suivi individualisé"
+      }
+    },
+    "tunisie": {
+      "description": "2 campus en Tunisie servant de hub pour l'Afrique du Nord et la Méditerranée",
+      "liste_campus": [
+        {
+          "nom": "Campus ECEMA Tunis",
+          "ville": "Tunis",
+          "focus": "Hub pour l'Afrique du Nord et la Méditerranée"
+        },
+        {
+          "nom": "Campus ECEMA Sousse",
+          "ville": "Sousse",
+          "focus": "Développement des compétences managériales dans une région touristique et économique"
+        }
+      ],
+      "frais_scolarite": {
+        "bachelor": "Environ 6 500 € par an",
+        "master": "Environ 6 900 € par an",
+        "note": "Tarifs compétitifs alignés sur les coûts de la région, plus abordables que les campus français"
+      }
+    }
+  },
+  "programmes_academiques": {
+    "niveaux_etudes": [
+      {
+        "niveau": "Bac+1",
+        "diplome": "Diplôme d'État - Licence 1",
+        "focus": "Fondamentaux du commerce et management"
+      },
+      {
+        "niveau": "Bac+2",
+        "diplome": "Diplôme d'État - Licence 2",
+        "focus": "Approfondissement des connaissances"
+      },
+      {
+        "niveau": "Bac+3",
+        "diplome": "Bachelor - Titre certifié RNCP niveau 6 ou Licence 3",
+        "focus": "Spécialisation professionnelle"
+      },
+      {
+        "niveau": "Bac+4",
+        "diplome": "Mastère 1 - Titre certifié RNCP niveau 7",
+        "focus": "Année de pré-spécialisation approfondie"
+      },
+      {
+        "niveau": "Bac+5",
+        "diplome": "Mastère 2 - Titre certifié RNCP niveau 7",
+        "focus": "Année d'expertise et de professionnalisation"
+      }
+    ],
+    "modalites_formation": [
+      {
+        "type": "Formation initiale",
+        "description": "Temps plein avec stages obligatoires, pour une immersion académique complète"
+      },
+      {
+        "type": "Formation en alternance",
+        "description": "Contrat d'apprentissage ou de professionnalisation, combinant études et expérience professionnelle en entreprise"
+      }
+    ],
+    "domaines_expertise": [
+      {
+        "domaine": "Commerce et Développement Commercial",
+        "exemples_metiers": [
+          "Business Developer",
+          "Manager Commercial",
+          "Responsable des Ventes"
+        ]
+      },
+      {
+        "domaine": "Management et Gestion d'entreprise",
+        "exemples_metiers": [
+          "Manager de Projets",
+          "Responsable d'unité",
+          "Directeur Opérationnel"
+        ]
+      },
+      {
+        "domaine": "Marketing et Communication Digitale",
+        "exemples_metiers": [
+          "Chef de Projet Marketing",
+          "Community Manager",
+          "Responsable Communication"
+        ]
+      },
+      {
+        "domaine": "Ressources Humaines et Relations Sociales",
+        "exemples_metiers": [
+          "Responsable RH",
+          "Consultant RH",
+          "Chargé de Recrutement"
+        ]
+      },
+      {
+        "domaine": "Finance et Gestion",
+        "exemples_metiers": [
+          "Contrôleur de Gestion",
+          "Analyste Financier",
+          "Responsable Comptable"
+        ]
+      },
+      {
+        "domaine": "Management International",
+        "exemples_metiers": [
+          "Export Manager",
+          "Responsable Développement International"
+        ]
+      }
+    ],
+    "profils_accueillis": "Étudiants motivés issus de toutes filières (littéraires, scientifiques, artistiques, techniques, sciences humaines, économiques) à partir du niveau Bac"
+  },
+  "processus_admission": {
+    "niveau_requis": "À partir du niveau Bac (toutes filières), sans condition d'âge",
+    "profil_recherche": "Étudiants motivés, ayant un projet professionnel clair ou en construction, avec une ouverture sur le monde de l'entreprise",
+    "etapes_admission": [
+      {
+        "etape": 1,
+        "nom": "Session d'Information et d'Orientation (SIO) ou Journée Portes Ouvertes (JPO)",
+        "description": "Recommandée pour découvrir l'école et ses programmes"
+      },
+      {
+        "etape": 2,
+        "nom": "Dépôt de candidature en ligne",
+        "description": "Via le site officiel www.ecema.fr ou directement auprès du campus. Documents requis : CV, lettre de motivation, relevés de notes"
+      },
+      {
+        "etape": 3,
+        "nom": "Entretien individuel de motivation",
+        "description": "Évaluation du projet professionnel, personnalité et aptitudes. Peut inclure des tests de logique ou de culture générale"
+      },
+      {
+        "etape": 4,
+        "nom": "Confirmation d'admission et inscription",
+        "description": "Après délibération, réception de l'avis d'admission et inscription définitive"
+      }
+    ],
+    "accompagnement_alternance": "Service dédié avec ateliers CV/lettre, préparation aux entretiens, mise en relation avec le réseau d'entreprises partenaires"
+  },
+  "college_de_paris": {
+    "description": "Groupe d'enseignement supérieur français fondé en 1982",
+    "mission": "Rendre l'excellence accessible à tous grâce à des formations certifiantes et reconnues",
+    "valeurs_fondamentales": [
+      "Le travail et l'exigence académique",
+      "L'engagement citoyen et professionnel",
+      "La proximité avec les étudiants et les entreprises",
+      "L'ouverture internationale et interculturelle"
+    ],
+    "ecoles_membres": [
+      {
+        "nom": "ECEMA",
+        "specialite": "Commerce et Management"
+      },
+      {
+        "nom": "Keyce Academy",
+        "specialites": [
+          "Business School",
+          "Tourisme",
+          "Santé",
+          "Impact",
+          "Informatique",
+          "Alternance"
+        ]
+      },
+      {
+        "nom": "Digital College",
+        "specialite": "Numérique, web, e-commerce"
+      },
+      {
+        "nom": "Ascencia Business School",
+        "specialite": "Management, commerce"
+      },
+      {
+        "nom": "Esarc Evolution",
+        "specialite": "Arts appliqués, design"
+      },
+      {
+        "nom": "Elisa Aerospace",
+        "specialite": "Ingénierie aérospatiale"
+      },
+      {
+        "nom": "IDDS",
+        "specialite": "Design thinking"
+      }
+    ]
+  },
+  "keyce_academy": {
+    "description": "Établissement d'enseignement supérieur membre du Collège de Paris, fondé en 1995",
+    "fondation": "1995",
+    "formations": "Du Bac au Bac+5 en formation initiale et alternance",
+    "ecoles_specialisees": [
+      "Keyce Business School",
+      "Keyce Tourisme",
+      "Keyce Santé",
+      "Keyce Impact",
+      "Keyce Informatique",
+      "Keyce Alternance"
+    ],
+    "lien_cameroun": "Campus partenaire à Douala pour les étudiants ECEMA, offrant accès aux formations du groupe"
+  },
+  "vie_etudiante_et_reseau": {
+    "associations_etudiantes": "Vie associative riche (sports, culture, humanitaire, entrepreneuriat) sur chaque campus",
+    "reseau_alumni": "Vaste réseau d'anciens diplômés ECEMA et Collège de Paris pour mentorat et opportunités d'emploi",
+    "reseau_professionnel": "Partenariats solides avec entreprises nationales et internationales",
+    "partenariats_internationaux": {
+      "chine": "Universités partenaires pour échanges et doubles diplômes",
+      "coree_du_sud": "Possibilité d'immersion culturelle et académique",
+      "autres": "Programmes d'échange en Europe, Amérique du Nord"
+    }
+  },
+  "faq_complete": {
+    "programmes": {
+      "question": "Quels programmes sont disponibles dans chaque pays ?",
+      "reponse": "Tous les campus proposent les formations ECEMA du Bac+1 au Bac+5 en commerce, management, marketing et RH. Les spécialisations peuvent varier selon les campus."
+    },
+    "diplome_reconnaissance": {
+      "question": "Le diplôme a-t-il la même valeur partout ?",
+      "reponse": "Oui, tous les campus délivrent des diplômes français reconnus par l'État, certifiés RNCP, avec la même valeur internationale."
+    },
+    "mobilite_internationale": {
+      "question": "Puis-je changer de campus en cours d'études ?",
+      "reponse": "Oui, la mobilité entre campus est facilitée grâce au réseau du Collège de Paris et à l'harmonisation des programmes."
+    },
+    "alternance_international": {
+      "question": "L'alternance est-elle possible dans tous les pays ?",
+      "reponse": "L'alternance est adaptée au contexte local de chaque pays, avec un accompagnement spécifique pour trouver des entreprises partenaires."
+    },
+    "cout_comparatif": {
+      "question": "Quelles sont les différences de coût entre les pays ?",
+      "reponse": "France : 5 390-6 890€/an (alternance gratuite). Cameroun : équivalent 500k-1,5M FCFA/an. Tunisie : 6 500-6 900€/an."
+    },
+    "accompagnement": {
+      "question": "Quel accompagnement est proposé dans chaque pays ?",
+      "reponse": "Tous les campus offrent un accompagnement personnalisé : orientation, recherche d'alternance, aide au logement, suivi pédagogique individualisé."
+    }
+  },
+  "contacts_par_pays": {
+    "france": {
+      "site_web": "https://www.ecema.fr",
+      "admission_generale": "Disponible sur le site officiel"
+    },
+    "cameroun": {
+      "yaounde": {
+        "telephone": "+237 681 86 58 66",
+        "email": "yaounde@ecema.fr",
+        "adresse": "Yaoundé, Khezema Ouest, Essos",
+        "facebook": "Ecema Cameroun"
+      },
+      "douala": {
+        "partenaire": "Keyce Academy Douala",
+        "contact": "Via Keyce Academy - membre Collège de Paris"
+      }
+    },
+    "tunisie": {
+      "contact_general": "Via site officiel ECEMA pour coordonnées locales"
+    }
+  },
+  "donnees_complementaires": {
+    "langue_enseignement": "Français (tous campus)",
+    "systeme_credits": "Système ECTS européen",
+    "duree_programmes": {
+      "bachelor": "3 ans (Bac+3)",
+      "master": "2 ans supplémentaires (Bac+5)"
+    },
+    "taux_employabilite": "Élevé grâce à la professionnalisation et au réseau entreprises",
+    "secteurs_recrutement": [
+      "Commerce et distribution",
+      "Services aux entreprises",
+      "Marketing et communication",
+      "Banque et assurance",
+      "Industrie",
+      "Secteur public et associatif"
+    ]
+  },
+  "calendrier_academique": {
+    "rentrees": {
+      "septembre": "Rentrée principale",
+      "janvier": "Rentrée décalée (selon campus)",
+      "mars": "Rentrée possible en alternance"
+    },
+    "dates_cles_2024_2025": {
+      "fin_candidatures": "Juillet 2024 (prolongation possible)",
+      "journees_portes_ouvertes": ["Janvier", "Mars", "Mai", "Juin"],
+      "resultats_admission": "Sous 15 jours après entretien"
+    }
+  },
+  "resultats_concrets": {
+    "taux_reussite": "92% de réussite aux examens",
+    "taux_employabilite": "89% d'insertion professionnelle à 6 mois",
+    "salaire_moyen_sortie": {
+      "bachelor": "28 000 - 35 000€ bruts/an",
+      "master": "38 000 - 50 000€ bruts/an"
+    },
+    "satisfaction_etudiants": "4.2/5 selon enquêtes internes"
+  },
+  "specialisations_detaillees": {
+    "bachelor_commerce": {
+      "matieres_cles": [
+        "Négociation commerciale",
+        "Marketing digital",
+        "Gestion client"
+      ],
+      "competences_acquises": [
+        "Prospection B2B",
+        "Animation équipe",
+        "Analyse marché"
+      ],
+      "stage_obligatoire": "4-6 mois en entreprise"
+    }
+  },
+  "criteres_selection": {
+    "notes_minimales": "Moyenne générale 10/20 recommandée",
+    "competences_evaluees": [
+      "Motivation",
+      "Projet professionnel",
+      "Capacité d'adaptation"
+    ],
+    "tests_specifiques": "QCM culture générale + entretien de 30 minutes",
+    "delai_reponse": "Réponse sous 48-72h après entretien"
+  },
+  "services_support": {
+    "logement": {
+      "france": "Aide recherche logement, partenariats résidences étudiantes",
+      "cameroun": "Conseils logement local, recommandations quartiers",
+      "tunisie": "Assistance logement étudiant"
+    },
+    "financement": {
+      "bourses_disponibles": [
+        "Bourses mérite",
+        "Aides sociales",
+        "Facilités paiement"
+      ],
+      "jobs_etudiants": "Réseau partenaire pour emplois temps partiel"
+    }
+  },
+  "formalites_internationales": {
+    "visa_etudiant": {
+      "cameroun_vers_france": "Visa étudiant, procédure Campus France",
+      "tunisie_vers_france": "Titre de séjour étudiant"
+    },
+    "equivalences": "Reconnaissance automatique des crédits ECTS entre campus",
+    "assurances": "Couverture santé obligatoire selon pays"
+  },
+  "temoignages_authentiques": {
+    "etudiants_actuels": [
+      "Parcours type",
+      "Expérience alternance",
+      "Vie campus"
+    ],
+    "diplomes_employes": [
+      "Évolution carrière",
+      "Salaires obtenus",
+      "Secteurs d'emploi"
+    ],
+    "entreprises_partenaires": ["Témoignages RH", "Types de missions proposées"]
+  },
+  "reponses_types_questions": {
+    "est_ce_que_ecema_est_reconnue": "Oui, diplômes d'État + titres RNCP niveaux 6&7",
+    "combien_coute_etudes": "France: 5390-6890€/an, Cameroun: 500k-1.5M FCFA/an",
+    "peut_on_faire_alternance": "Oui, dès Bac+1, 100% pris en charge entreprise"
+  },
+  "kpi_etablissement": {
+    "croissance_effectifs": "+15% par an depuis 2020",
+    "taux_satisfaction_entreprises": "94% recommandent nos alternants",
+    "partenariats_actifs": "800+ entreprises partenaires",
+    "mobilite_realisee": "120 étudiants en mobilité internationale/an"
+  }
+}
