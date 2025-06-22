@@ -287,27 +287,24 @@ cache = Cache(app)
 # Instance globale du service RAG (sera initialisée au démarrage)
 rag_service = None
 
-@app.route("/")
-def index():
-    """Initialise le service RAG au lancement de l'application."""
+def initialize_rag_service():
+    """Initialise le service RAG une seule fois au démarrage."""
     global rag_service
-
     api_key = os.getenv('GOOGLE_API_KEY')
     if not api_key:
         raise ValueError("La variable d'environnement GOOGLE_API_KEY est requise")
-
     pdf_directory = os.getenv('PDF_DIRECTORY', 'pdfs')
-
     try:
         rag_service = PDFRAGService(api_key, pdf_directory)
         logger.info("Service RAG initialisé avec succès")
     except Exception as e:
         logger.error(f"Échec de l'initialisation du service RAG : {str(e)}")
         raise
-    return "✅ Service RAG Flask en ligne !"
 
-# def initialize_rag_service():
-#     """Page d'accueil simple pour vérifier que le service tourne."""
+@app.route("/")
+def index():
+    """Page d'accueil simple pour vérifier que le service tourne."""
+    return "✅ Service RAG Flask en ligne !"
 
 @app.route('/health', methods=['GET'])
 def health_check():
@@ -407,8 +404,7 @@ if __name__ == '__main__':
     # Point d'entrée principal de l'application Flask
     try:
         load_dotenv()  # Charge les variables d'environnement depuis un fichier .env
-        # initialize_rag_service()  # Initialise le service RAG
-        index()  # Initialise le service RAG
+        initialize_rag_service()  # Initialise le service RAG une seule fois
 
 
         # Démarre le serveur Flask
@@ -416,7 +412,7 @@ if __name__ == '__main__':
         debug = os.getenv('DEBUG', 'False').lower() == 'true'
 
         logger.info(f"Démarrage de l'application Flask sur le port {port}")
-        # app.run(host='0.0.0.0', port=port, debug=debug)
+        app.run(host='0.0.0.0', port=port, debug=debug, use_reloader=False)
 
     except Exception as e:
         logger.error(f"Échec du démarrage de l'application : {str(e)}")
