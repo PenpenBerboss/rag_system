@@ -294,6 +294,9 @@ def initialize_rag_service():
     except Exception as e:
         logger.error(f"Échec de l'initialisation du service RAG : {str(e)}")
         raise
+@app.route("/")
+def index():
+    return "✅ Service RAG Flask en ligne !"
 
 @app.route('/health', methods=['GET'])
 def health_check():
