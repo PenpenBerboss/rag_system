@@ -1,3 +1,10 @@
+# importation des bibliothèques nécessaires
+# Ce fichier gère l'API Flask pour le service de RAG sur PDF, y compris l'indexation, la recherche et la génération de réponses.
+# Il utilise LangChain pour la gestion des embeddings et des chaînes de questions-réponses, ainsi que Twilio pour les notifications
+# et la journalisation pour suivre les événements et les erreurs.
+# Les fichiers PDF et JSON sont stockés dans un répertoire spécifique, et les réponses sont
+# renvoyées au format JSON. Les erreurs sont gérées de manière appropriée pour assurer
+# une expérience utilisateur fluide.
 import os
 import logging
 from datetime import datetime
@@ -20,7 +27,7 @@ from langchain.prompts import PromptTemplate
 from dotenv import load_dotenv
 from twilio.rest import Client
 
-# Configurer la journalisation
+# Configuration de la journalisation pour suivre les événements et erreurs
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -28,23 +35,24 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class PDFRAGService:
-    """Service professionnel de RAG pour PDF avec mise en cache et optimisation"""
-    
+    """Service principal pour le RAG sur PDF, gère l'indexation, la recherche et la génération de réponses."""
+
     def __init__(self, api_key: str, pdf_directory: str = "pdfs"):
+        # Initialisation des variables et composants internes
         self.api_key = api_key
         self.pdf_directory = pdf_directory
         self.vector_store = None
         self.embeddings = None
         self.chain = None
         self.pdf_metadata = {}
-        
-        # Initialiser les composants
+
+        # Initialisation des embeddings, chargement des PDF/JSON, création de la chaîne QA
         self._initialize_embeddings()
         self._load_and_process_pdfs()
         self._initialize_chain()
-    
+
     def _initialize_embeddings(self):
-        """Initialiser les embeddings Google AI"""
+        """Initialise les embeddings Google AI pour la vectorisation des textes."""
         try:
             self.embeddings = GoogleGenerativeAIEmbeddings(
                 model="models/embedding-001", 
@@ -54,9 +62,9 @@ class PDFRAGService:
         except Exception as e:
             logger.error(f"Échec de l'initialisation des embeddings : {str(e)}")
             raise
-    
+
     def _extract_pdf_text(self, pdf_path: str) -> str:
-        """Extraire le texte d'un seul fichier PDF"""
+        """Extrait le texte brut d'un fichier PDF donné."""
         try:
             with open(pdf_path, 'rb') as file:
                 pdf_reader = PdfReader(file)
@@ -67,17 +75,17 @@ class PDFRAGService:
         except Exception as e:
             logger.error(f"Erreur lors de l'extraction du texte de {pdf_path} : {str(e)}")
             return ""
-    
+
     def _get_text_chunks(self, text: str) -> List[str]:
-        """Diviser le texte en morceaux pour le traitement"""
+        """Découpe un texte en morceaux pour faciliter l'indexation et la recherche."""
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=10000, 
             chunk_overlap=1000
         )
         return text_splitter.split_text(text)
-    
+
     def _load_and_process_pdfs(self):
-        """Charger tous les PDF et JSON du répertoire et créer le magasin de vecteurs"""
+        """Charge tous les fichiers PDF et JSON du répertoire, extrait et indexe leur contenu."""
         if not os.path.exists(self.pdf_directory):
             os.makedirs(self.pdf_directory)
             logger.warning(f"Répertoire PDF créé : {self.pdf_directory}")
@@ -95,25 +103,25 @@ class PDFRAGService:
         all_chunks = []
         chunk_metadata = []
 
-        # Traitement des PDF
+        # Traitement des fichiers PDF
         for pdf_file in pdf_files:
             pdf_path = os.path.join(self.pdf_directory, pdf_file)
             logger.info(f"Traitement de {pdf_file}...")
 
-            # Extraire le texte et créer des morceaux
+            # Extraction du texte et découpage en morceaux
             text = self._extract_pdf_text(pdf_path)
             if text:
                 chunks = self._get_text_chunks(text)
                 all_chunks.extend(chunks)
 
-                # Stocker les métadonnées
+                # Stockage des métadonnées pour chaque PDF
                 self.pdf_metadata[pdf_file] = {
                     'path': pdf_path,
                     'chunk_count': len(chunks),
                     'processed_at': datetime.now().isoformat()
                 }
 
-                # Créer des métadonnées pour chaque morceau
+                # Métadonnées pour chaque chunk
                 for i, chunk in enumerate(chunks):
                     chunk_metadata.append({
                         'source': pdf_file,
@@ -121,7 +129,7 @@ class PDFRAGService:
                         'text_preview': chunk[:100] + "..." if len(chunk) > 100 else chunk
                     })
 
-        # Traitement des JSON
+        # Traitement des fichiers JSON
         for json_file in json_files:
             json_path = os.path.join(self.pdf_directory, json_file)
             logger.info(f"Traitement de {json_file}...")
@@ -130,7 +138,7 @@ class PDFRAGService:
                 with open(json_path, 'r', encoding='utf-8') as f:
                     json_data = json.load(f)
 
-                    # Fonction récursive pour aplatir le JSON en chunks de texte
+                    # Fonction récursive pour aplatir le JSON en texte
                     def flatten_json(obj, prefix=""):
                         chunks = []
                         if isinstance(obj, dict):
@@ -141,7 +149,6 @@ class PDFRAGService:
                             for item in obj:
                                 chunks.extend(flatten_json(item, prefix))
                         else:
-                            # Feuille : on ajoute le texte
                             text = f"{prefix}{obj}"
                             chunks.append(text)
                         return chunks
@@ -159,14 +166,14 @@ class PDFRAGService:
 
         if all_chunks:
             try:
-                # Créer le magasin de vecteurs
+                # Création du magasin de vecteurs FAISS pour la recherche sémantique
                 self.vector_store = FAISS.from_texts(
                     all_chunks,
                     embedding=self.embeddings,
                     metadatas=chunk_metadata
                 )
 
-                # Sauvegarder le magasin de vecteurs pour une utilisation future
+                # Sauvegarde locale de l'index FAISS
                 vector_store_path = "faiss_index_api"
                 self.vector_store.save_local(vector_store_path)
 
@@ -178,9 +185,9 @@ class PDFRAGService:
         else:
             logger.error("Aucun texte extrait des fichiers PDF ou JSON")
             raise ValueError("Aucun contenu PDF ou JSON valide trouvé")
-    
+
     def _initialize_chain(self):
-        """Initialiser la chaîne conversationnelle"""
+        """Initialise la chaîne de question/réponse basée sur le modèle Gemini."""
         prompt_template = """
         Répondez aux questions en fournissant autant de contexte que possible. Si vous ne connaissez pas la réponse, 
         dites-leur de contacter Penpen Berboss ou d'ecrire sur le site de ECEMA pour plus d'informations. Répondez dans la même langue que la question de l'utilisateur.
@@ -190,56 +197,56 @@ class PDFRAGService:
 
         Réponse :
         """
-        
+
         try:
             model = ChatGoogleGenerativeAI(
                 model="gemini-1.5-flash", 
                 temperature=0.3, 
                 google_api_key=self.api_key
             )
-            
+
             prompt = PromptTemplate(
                 template=prompt_template, 
                 input_variables=["context", "question"]
             )
-            
+
             self.chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
             logger.info("Chaîne conversationnelle initialisée avec succès")
-            
+
         except Exception as e:
             logger.error(f"Échec de l'initialisation de la chaîne : {str(e)}")
             raise
-    
+
     @lru_cache(maxsize=128)
     def _get_cached_similarity_search(self, question_hash: str, question: str, k: int = 4):
-        """Recherche de similarité mise en cache pour éviter les embeddings répétés"""
+        """Recherche de similarité mise en cache pour accélérer les requêtes répétées."""
         if not self.vector_store:
             raise ValueError("Magasin de vecteurs non initialisé")
-        
+
         return self.vector_store.similarity_search(question, k=k)
-    
+
     def query(self, question: str) -> Dict:
-        """Traiter une requête et retourner la réponse"""
+        """Traite une question utilisateur et retourne la réponse générée avec les sources utilisées."""
         if not question or not question.strip():
             raise BadRequest("La question ne peut pas être vide")
-        
+
         if not self.vector_store or not self.chain:
             raise InternalServerError("Système RAG non correctement initialisé")
-        
+
         try:
-            # Créer un hash pour la mise en cache
+            # Hash de la question pour la mise en cache
             question_hash = hashlib.md5(question.encode()).hexdigest()
-            
-            # Obtenir les documents pertinents
+
+            # Recherche des documents les plus pertinents
             docs = self._get_cached_similarity_search(question_hash, question)
-            
-            # Générer la réponse
+
+            # Génération de la réponse via la chaîne QA
             response = self.chain(
                 {"input_documents": docs, "question": question}, 
                 return_only_outputs=True
             )
-            
-            # Préparer la réponse avec les métadonnées
+
+            # Construction de la réponse enrichie
             result = {
                 "question": question,
                 "answer": response['output_text'],
@@ -247,16 +254,16 @@ class PDFRAGService:
                 "sources_used": len(docs),
                 "pdf_sources": list(set([doc.metadata.get('source', 'unknown') for doc in docs if hasattr(doc, 'metadata')]))
             }
-            
+
             logger.info(f"Requête traitée avec succès : {question[:50]}...")
             return result
-            
+
         except Exception as e:
             logger.error(f"Erreur lors du traitement de la requête : {str(e)}")
             raise InternalServerError(f"Échec du traitement de la requête : {str(e)}")
-    
+
     def get_system_info(self) -> Dict:
-        """Obtenir des informations sur les PDF chargés et l'état du système"""
+        """Retourne des informations sur les PDF chargés et l'état du système."""
         return {
             "status": "actif",
             "pdfs_loaded": len(self.pdf_metadata),
@@ -266,52 +273,56 @@ class PDFRAGService:
             "chain_ready": self.chain is not None
         }
 
-# Application Flask
-app = Flask(__name__)
-CORS(app)  # Autorise toutes les origines (pour le développement)
+# --- Initialisation de l'application Flask et des routes ---
 
-# Configurer la mise en cache
+# Création de l'application Flask
+app = Flask(__name__)
+CORS(app)  # Active le CORS pour toutes les origines (utile en développement)
+
+# Configuration du cache Flask
 app.config['CACHE_TYPE'] = 'simple'
 app.config['CACHE_DEFAULT_TIMEOUT'] = 300  # 5 minutes
 cache = Cache(app)
 
-# Instance globale du service RAG
+# Instance globale du service RAG (sera initialisée au démarrage)
 rag_service = None
 
 def initialize_rag_service():
-    """Initialiser le service RAG au démarrage"""
+    """Initialise le service RAG au lancement de l'application."""
     global rag_service
-    
+
     api_key = os.getenv('GOOGLE_API_KEY')
     if not api_key:
         raise ValueError("La variable d'environnement GOOGLE_API_KEY est requise")
-    
+
     pdf_directory = os.getenv('PDF_DIRECTORY', 'pdfs')
-    
+
     try:
         rag_service = PDFRAGService(api_key, pdf_directory)
         logger.info("Service RAG initialisé avec succès")
     except Exception as e:
         logger.error(f"Échec de l'initialisation du service RAG : {str(e)}")
         raise
+
 @app.route("/")
 def index():
+    """Page d'accueil simple pour vérifier que le service tourne."""
     return "✅ Service RAG Flask en ligne !"
 
 @app.route('/health', methods=['GET'])
 def health_check():
-    """Point de terminaison de vérification de santé"""
+    """Point de terminaison pour vérifier la santé du service."""
     if rag_service is None:
         return jsonify({"status": "erreur", "message": "Service RAG non initialisé"}), 503
-    
+
     return jsonify({"status": "sain", "timestamp": datetime.now().isoformat()})
 
 @app.route('/info', methods=['GET'])
 def system_info():
-    """Obtenir les informations du système"""
+    """Retourne des informations sur le système et les PDF chargés."""
     if rag_service is None:
         return jsonify({"error": "Service RAG non initialisé"}), 503
-    
+
     try:
         info = rag_service.get_system_info()
         return jsonify(info)
@@ -322,23 +333,23 @@ def system_info():
 @app.route('/query', methods=['POST'])
 # @cache.cached(timeout=300, key_prefix='query')
 def query_pdfs():
-    """Interroger les PDF"""
+    """Point de terminaison principal pour interroger les PDF avec une question."""
     if rag_service is None:
         return jsonify({"error": "Service RAG non initialisé"}), 503
-    
+
     try:
         data = request.get_json()
-        
+
         if not data or 'question' not in data:
             return jsonify({"error": "La requête doit contenir le champ 'question'"}), 400
-        
+
         question = data['question']
         result = rag_service.query(question)
-        
+
         logger.info(f"Réponse brute de l'API RAG : {data}")
 
         return jsonify(result)
-        
+
     except BadRequest as e:
         return jsonify({"error": str(e)}), 400
     except InternalServerError as e:
@@ -349,7 +360,7 @@ def query_pdfs():
 
 @app.route('/clear-cache', methods=['POST'])
 def clear_cache():
-    """Vider le cache de l'application"""
+    """Vide le cache de l'application (non activé ici)."""
     try:
         # cache.clear()
         return jsonify({"message": "Cache vidé avec succès"})
@@ -359,6 +370,7 @@ def clear_cache():
 
 @app.route('/whatsapp', methods=['POST'])
 def send_whatsapp_message():
+    """Envoie un message WhatsApp via l'API Twilio."""
     try:
         data = request.get_json()
         to_number = data.get('to')
@@ -383,24 +395,27 @@ def send_whatsapp_message():
 
 @app.errorhandler(404)
 def not_found(error):
+    """Gestion des erreurs 404 (route non trouvée)."""
     return jsonify({"error": "Point de terminaison non trouvé"}), 404
 
 @app.errorhandler(500)
 def internal_error(error):
+    """Gestion des erreurs 500 (erreur serveur)."""
     return jsonify({"error": "Erreur interne du serveur"}), 500
 
 if __name__ == '__main__':
+    # Point d'entrée principal de l'application Flask
     try:
-        load_dotenv()
-        initialize_rag_service()
-        
-        # Démarrer l'application Flask
+        load_dotenv()  # Charge les variables d'environnement depuis un fichier .env
+        initialize_rag_service()  # Initialise le service RAG
+
+        # Démarre le serveur Flask
         port = int(os.getenv('PORT', 10000))
         debug = os.getenv('DEBUG', 'False').lower() == 'true'
-        
+
         logger.info(f"Démarrage de l'application Flask sur le port {port}")
         app.run(host='0.0.0.0', port=port, debug=debug)
-        
+
     except Exception as e:
         logger.error(f"Échec du démarrage de l'application : {str(e)}")
         exit(1)
