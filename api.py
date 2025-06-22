@@ -287,7 +287,8 @@ cache = Cache(app)
 # Instance globale du service RAG (sera initialisée au démarrage)
 rag_service = None
 
-def initialize_rag_service():
+@app.route("/")
+def index():
     """Initialise le service RAG au lancement de l'application."""
     global rag_service
 
@@ -303,11 +304,10 @@ def initialize_rag_service():
     except Exception as e:
         logger.error(f"Échec de l'initialisation du service RAG : {str(e)}")
         raise
-
-@app.route("/")
-def index():
-    """Page d'accueil simple pour vérifier que le service tourne."""
     return "✅ Service RAG Flask en ligne !"
+
+# def initialize_rag_service():
+#     """Page d'accueil simple pour vérifier que le service tourne."""
 
 @app.route('/health', methods=['GET'])
 def health_check():
