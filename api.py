@@ -287,6 +287,13 @@ cache = Cache(app)
 # Instance globale du service RAG (sera initialisée au démarrage)
 rag_service = None
 
+def create_app():
+    global rag_service
+    load_dotenv()
+    initialize_rag_service()
+    return app
+
+# Fonction pour initialiser le service RAG une seule fois au démarrage de l'application
 def initialize_rag_service():
     """Initialise le service RAG une seule fois au démarrage."""
     global rag_service
@@ -403,16 +410,13 @@ def internal_error(error):
 if __name__ == '__main__':
     # Point d'entrée principal de l'application Flask
     try:
-        load_dotenv()  # Charge les variables d'environnement depuis un fichier .env
-        initialize_rag_service()  # Initialise le service RAG une seule fois
+       app = create_app()
+       # Démarre le serveur Flask
+       port = int(os.getenv('PORT', 10000))
+       debug = os.getenv('DEBUG', 'False').lower() == 'true'
 
-
-        # Démarre le serveur Flask
-        port = int(os.getenv('PORT', 10000))
-        debug = os.getenv('DEBUG', 'False').lower() == 'true'
-
-        logger.info(f"Démarrage de l'application Flask sur le port {port}")
-        app.run(host='0.0.0.0', port=port, debug=debug, use_reloader=False)
+       logger.info(f"Démarrage de l'application Flask sur le port {port}")
+       app.run(host='0.0.0.0', port=port, debug=debug, use_reloader=False)
 
     except Exception as e:
         logger.error(f"Échec du démarrage de l'application : {str(e)}")
