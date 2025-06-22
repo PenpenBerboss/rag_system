@@ -7,5 +7,6 @@ langchain-community
 faiss-cpu
 pandas
 python-dotenv
-gunicorn
+gunicorn==21.2.0
 Werkzeug
+openai
