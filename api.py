@@ -414,7 +414,7 @@ if __name__ == '__main__':
         debug = os.getenv('DEBUG', 'False').lower() == 'true'
 
         logger.info(f"Démarrage de l'application Flask sur le port {port}")
-        app.run(host='0.0.0.0', port=port, debug=debug)
+        # app.run(host='0.0.0.0', port=port, debug=debug)
 
     except Exception as e:
         logger.error(f"Échec du démarrage de l'application : {str(e)}")
