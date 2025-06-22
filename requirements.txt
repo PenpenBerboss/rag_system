@@ -10,3 +10,5 @@ python-dotenv
 gunicorn==21.2.0
 Werkzeug
 openai
+flask_cors
+google-cloud-aiplatform
