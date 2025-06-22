@@ -407,7 +407,9 @@ if __name__ == '__main__':
     # Point d'entrée principal de l'application Flask
     try:
         load_dotenv()  # Charge les variables d'environnement depuis un fichier .env
-        initialize_rag_service()  # Initialise le service RAG
+        # initialize_rag_service()  # Initialise le service RAG
+        index()  # Initialise le service RAG
+
 
         # Démarre le serveur Flask
         port = int(os.getenv('PORT', 10000))
