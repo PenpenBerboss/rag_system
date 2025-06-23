@@ -445,6 +445,34 @@ def whatsapp_webhook():
         logger.error(f"Erreur webhook WhatsApp : {str(e)}", exc_info=True)
         return jsonify({"status": "error", "message": str(e)}), 500
 
+@app.route('/whatsapp/welcome', methods=['POST'])
+def send_whatsapp_welcome():
+    """
+    Envoie un message d'accueil WhatsApp via Twilio.
+    """
+    try:
+        data = request.get_json()
+        to_number = data.get('to')
+        welcome_message = data.get('message', "Bonjour, je voudrais des renseignements sur ECEMA")
+
+        if not to_number:
+            return jsonify({"status": "error", "message": "Paramètre 'to' manquant"}), 400
+
+        account_sid = os.environ.get('TWILIO_ACCOUNT_SID', 'AC4661b5fc371a756e4612313b05a94797')
+        auth_token = os.environ.get('TWILIO_AUTH_TOKEN', '441081a37ed9ab1ba8881a2222e05337')
+        client = Client(account_sid, auth_token)
+
+        client.messages.create(
+            from_='whatsapp:+14155238886',
+            body=welcome_message,
+            to=f'whatsapp:{to_number}'
+        )
+
+        return jsonify({"status": "success"}), 200
+    except Exception as e:
+        logger.error(f"Erreur lors de l'envoi du message d'accueil WhatsApp : {str(e)}", exc_info=True)
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 @app.errorhandler(404)
 def not_found(error):
     """Gestion des erreurs 404 (route non trouvée)."""
