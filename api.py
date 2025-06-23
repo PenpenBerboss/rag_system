@@ -12,6 +12,7 @@ from functools import lru_cache
 from typing import List, Dict, Optional
 import hashlib
 import json
+import requests
 
 from flask import Flask, request, jsonify
 from flask_caching import Cache
@@ -464,7 +465,7 @@ def send_whatsapp_welcome():
     try:
         data = request.get_json()
         to_number = data.get('to')
-        welcome_message = data.get('message', "Bonjour, je voudrais des renseignements sur ECEMA")
+        welcome_message = data.get('message', "Bonjour")
 
         if not to_number:
             return jsonify({"status": "error", "message": "Paramètre 'to' manquant"}), 400
@@ -484,6 +485,61 @@ def send_whatsapp_welcome():
         logger.error(f"Erreur lors de l'envoi du message d'accueil WhatsApp : {str(e)}", exc_info=True)
         return jsonify({"status": "error", "message": str(e)}), 500
 
+@app.route("/webhook", methods=["POST"])
+def messenger_webhook():
+    """
+    Réception des messages Messenger (POST) et réponse via le système RAG.
+    """
+    try:
+        data = request.get_json()
+        # Messenger envoie les messages dans 'entry'
+        for entry in data.get("entry", []):
+            for messaging_event in entry.get("messaging", []):
+                sender_id = messaging_event["sender"]["id"]
+                if "message" in messaging_event and "text" in messaging_event["message"]:
+                    user_message = messaging_event["message"]["text"]
+
+                    # Message d'accueil si besoin
+                    if user_message.strip().lower() in ["bonjour", "salut", "hello", "bonsoir"]:
+                        response_text = (
+                            "Bonjour ! Je suis l'assistant virtuel d'ECEMA - École Supérieure de Commerce et de Management.\n\n"
+                            "Je peux vous renseigner sur nos programmes Bac+1 à Bac+5 RNCP, nos campus en France, au Cameroun et en Tunisie, l'alternance, les financements, la mobilité internationale et bien plus.\n\n"
+                            "✨ Nouveauté : J'utilise maintenant un système avancé pour analyser vos questions et fournir des réponses précises basées sur notre documentation officielle !\n\n"
+                            "Comment puis-je vous aider ?"
+                        )
+                    else:
+                        if rag_service is None:
+                            initialize_rag_service()
+                        result = rag_service.query(user_message)
+                        response_text = result.get("answer", "Je n'ai pas pu générer de réponse.")
+
+                    # Envoi de la réponse à l'utilisateur Messenger
+                    send_messenger_message(sender_id, response_text)
+
+        return "EVENT_RECEIVED", 200
+    except Exception as e:
+        logger.error(f"Erreur webhook Messenger : {str(e)}", exc_info=True)
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+def send_messenger_message(recipient_id, message_text):
+    """
+    Envoie un message texte à un utilisateur Messenger via l'API Graph.
+    """
+    PAGE_ACCESS_TOKEN = os.environ.get("PAGE_ACCESS_TOKEN")
+    if not PAGE_ACCESS_TOKEN:
+        logger.error("PAGE_ACCESS_TOKEN n'est pas défini dans les variables d'environnement.")
+        return
+    url = "https://graph.facebook.com/v17.0/me/messages"
+    params = {"access_token": PAGE_ACCESS_TOKEN}
+    headers = {"Content-Type": "application/json"}
+    data = {
+        "recipient": {"id": recipient_id},
+        "message": {"text": message_text}
+    }
+    response = requests.post(url, params=params, headers=headers, json=data)
+    if response.status_code != 200:
+        logger.error(f"Erreur envoi Messenger : {response.text}")
+
 @app.errorhandler(404)
 def not_found(error):
     """Gestion des erreurs 404 (route non trouvée)."""
@@ -493,6 +549,16 @@ def not_found(error):
 def internal_error(error):
     """Gestion des erreurs 500 (erreur serveur)."""
     return jsonify({"error": "Erreur interne du serveur"}), 500
+
+@app.route("/webhook", methods=["GET"])
+def verify():
+    """
+    Vérification du webhook Messenger (GET).
+    """
+    VERIFY_TOKEN = os.environ.get("VERIFY_TOKEN", "default_verify_token")
+    if request.args.get("hub.verify_token") == VERIFY_TOKEN:
+        return request.args.get("hub.challenge")
+    return "Token invalide", 403
 
 if __name__ == '__main__':
     # Point d'entrée principal de l'application Flask
