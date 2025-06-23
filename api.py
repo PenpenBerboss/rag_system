@@ -553,12 +553,19 @@ def internal_error(error):
 @app.route("/webhook", methods=["GET"])
 def verify():
     """
-    Vérification du webhook Messenger (GET).
+    Vérification du webhook Messenger (GET) avec gestion du mode subscribe.
     """
     VERIFY_TOKEN = os.environ.get("VERIFY_TOKEN", "default_verify_token")
-    if request.args.get("hub.verify_token") == VERIFY_TOKEN:
-        return request.args.get("hub.challenge")
-    return "Token invalide", 403
+    mode = request.args.get("hub.mode")
+    token = request.args.get("hub.verify_token")
+    challenge = request.args.get("hub.challenge")
+
+    if mode == "subscribe" and token == VERIFY_TOKEN:
+        print("✅ Facebook webhook vérifié")
+        return challenge, 200
+    else:
+        print("❌ Token invalide :", token)
+        return "Token invalide", 403
 
 if __name__ == '__main__':
     # Point d'entrée principal de l'application Flask
