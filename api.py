@@ -189,7 +189,8 @@ class PDFRAGService:
     def _initialize_chain(self):
         """Initialise la chaîne de question/réponse basée sur le modèle Gemini."""
         prompt_template = """
-        Répondez aux questions en fournissant autant de contexte que possible. Si vous ne connaissez pas la réponse, 
+        Répondez aux questions en fournissant autant de contexte que possible, si l'utilisateur pose une question sur ECEMA faudra lui repondre dans le context de ECEMA mais si il indexe une une autre ecole ou par exemple le groupe college de Paris, faudra lui repondre par rapport a ce qu'il a demande en prenant reference uniquement dans le contexte des documents qui t'ont ete fournis. 
+        Si vous ne connaissez pas la réponse, 
         dites-leur de contacter Penpen Berboss ou d'ecrire sur le site de ECEMA pour plus d'informations. Répondez dans la même langue que la question de l'utilisateur.
 
         Contexte :\n{context}\n
@@ -412,22 +413,30 @@ def send_whatsapp_message():
 def whatsapp_webhook():
     """
     Webhook pour recevoir les messages WhatsApp entrants via Twilio.
-    Utilise le système RAG pour générer la réponse et la renvoie à l'utilisateur.
+    Envoie un message d'accueil personnalisé ou utilise le système RAG selon la question.
     """
     try:
         incoming = request.form
-        user_message = incoming.get('Body')
+        user_message = incoming.get('Body', '').strip().lower()
         user_number = incoming.get('From')  # format: 'whatsapp:+237xxxxxx'
 
-        # Vérification des paramètres
-        if not user_message or not user_number:
-            return jsonify({"status": "error", "message": "Paramètres manquants"}), 400
+        # Message d'accueil unifié
+        welcome_message = (
+            "Bonjour ! Je suis l'assistant virtuel d'ECEMA - École Supérieure de Commerce et de Management.\n\n"
+            "Je peux vous renseigner sur nos programmes Bac+1 à Bac+5 RNCP, nos campus en France, au Cameroun et en Tunisie, l'alternance, les financements, la mobilité internationale et bien plus.\n\n"
+            "✨ Nouveauté : J'utilise maintenant un système avancé pour analyser vos questions et fournir des réponses précises basées sur notre documentation officielle !\n\n"
+            "Comment puis-je vous aider ?"
+        )
 
-        # Utilise le RAG pour générer la réponse (même logique que le chatbot)
-        if rag_service is None:
-            initialize_rag_service()
-        result = rag_service.query(user_message)
-        answer = result.get("answer", "Je n'ai pas pu générer de réponse.")
+        # Si le message est un message d'accueil
+        if user_message in ["bonjour", "salut", "hello", "bonsoir"]:
+            response_text = welcome_message
+        else:
+            # Utilise le système RAG pour générer la réponse
+            if rag_service is None:
+                initialize_rag_service()
+            result = rag_service.query(user_message)
+            response_text = result.get("answer", "Je n'ai pas pu générer de réponse.")
 
         # Envoi de la réponse via Twilio WhatsApp
         account_sid = os.environ.get('TWILIO_ACCOUNT_SID', 'AC4661b5fc371a756e4612313b05a94797')
@@ -436,7 +445,7 @@ def whatsapp_webhook():
 
         client.messages.create(
             from_='whatsapp:+14155238886',
-            body=answer,
+            body=response_text,
             to=user_number
         )
 
