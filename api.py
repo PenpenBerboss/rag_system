@@ -189,9 +189,11 @@ class PDFRAGService:
     def _initialize_chain(self):
         """Initialise la chaîne de question/réponse basée sur le modèle Gemini."""
         prompt_template = """
-        Répondez aux questions en fournissant autant de contexte que possible, si l'utilisateur pose une question sur ECEMA faudra lui repondre dans le context de ECEMA mais si il indexe une une autre ecole ou par exemple le groupe college de Paris, faudra lui repondre par rapport a ce qu'il a demande en prenant reference uniquement dans le contexte des documents qui t'ont ete fournis. 
-        Si vous ne connaissez pas la réponse, 
-        dites-leur de contacter Penpen Berboss ou d'ecrire sur le site de ECEMA pour plus d'informations. Répondez dans la même langue que la question de l'utilisateur.
+Réponds aux questions en apportant le maximum de contexte possible. Si l'utilisateur pose une question concernant ECEMA, ta réponse doit être strictement basée sur le contexte et les informations liées à ECEMA. Si l'utilisateur mentionne une autre école ou entité, comme par exemple le Groupe Collège de Paris, réponds uniquement en te basant sur les informations présentes dans les documents qui t'ont été fournis, sans extrapoler.
+
+Si tu ne connais pas la réponse ou si elle ne figure pas dans les documents disponibles, invite l'utilisateur à contacter Penpen Berboss ou à se rendre sur le site officiel de ECEMA pour obtenir plus d'informations.
+
+Important : ta réponse doit être rédigée dans la même langue que celle utilisée par l'utilisateur.
 
         Contexte :\n{context}\n
         Question :\n{question}\n
