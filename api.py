@@ -374,27 +374,75 @@ def clear_cache():
 
 @app.route('/whatsapp', methods=['POST'])
 def send_whatsapp_message():
-    """Envoie un message WhatsApp via l'API Twilio."""
     try:
         data = request.get_json()
         to_number = data.get('to')
+        question = data.get('question')  # On attend le champ 'question' comme pour le chatbot
         content_sid = data.get('content_sid')
         content_variables = data.get('content_variables', '{}')
 
-        account_sid = 'AC4661b5fc371a756e4612313b05a94797'
-        auth_token = '[AuthToken]'  # Remplace par ton vrai token sécurisé
+        # Vérification des paramètres
+        if not to_number or not question:
+            return jsonify({"status": "error", "message": "Paramètres manquants"}), 400
+
+        # Utilise le RAG pour générer la réponse
+        if rag_service is None:
+            initialize_rag_service()
+        result = rag_service.query(question)
+        answer = result.get("answer", "Je n'ai pas pu générer de réponse.")
+
+        # Envoi de la réponse via Twilio WhatsApp
+        account_sid = os.environ.get('TWILIO_ACCOUNT_SID', 'AC4661b5fc371a756e4612313b05a94797')
+        auth_token = os.environ.get('TWILIO_AUTH_TOKEN', '441081a37ed9ab1ba8881a2222e05337')
         client = Client(account_sid, auth_token)
 
+        # Envoi du message WhatsApp (texte simple)
         message = client.messages.create(
             from_='whatsapp:+14155238886',
-            content_sid=content_sid,
-            content_variables=content_variables,
+            body=answer,
             to=f'whatsapp:{to_number}'
         )
 
-        return jsonify({"status": "success", "sid": message.sid}), 200
+        return jsonify({"status": "success", "sid": message.sid, "answer": answer}), 200
     except Exception as e:
-        logger.error(f"Erreur lors de l'envoi WhatsApp : {str(e)}")
+        logger.error(f"Erreur WhatsApp : {str(e)}", exc_info=True)
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/webhook/whatsapp', methods=['POST'])
+def whatsapp_webhook():
+    """
+    Webhook pour recevoir les messages WhatsApp entrants via Twilio.
+    Utilise le système RAG pour générer la réponse et la renvoie à l'utilisateur.
+    """
+    try:
+        incoming = request.form
+        user_message = incoming.get('Body')
+        user_number = incoming.get('From')  # format: 'whatsapp:+237xxxxxx'
+
+        # Vérification des paramètres
+        if not user_message or not user_number:
+            return jsonify({"status": "error", "message": "Paramètres manquants"}), 400
+
+        # Utilise le RAG pour générer la réponse (même logique que le chatbot)
+        if rag_service is None:
+            initialize_rag_service()
+        result = rag_service.query(user_message)
+        answer = result.get("answer", "Je n'ai pas pu générer de réponse.")
+
+        # Envoi de la réponse via Twilio WhatsApp
+        account_sid = os.environ.get('TWILIO_ACCOUNT_SID', 'AC4661b5fc371a756e4612313b05a94797')
+        auth_token = os.environ.get('TWILIO_AUTH_TOKEN', '441081a37ed9ab1ba8881a2222e05337')
+        client = Client(account_sid, auth_token)
+
+        client.messages.create(
+            from_='whatsapp:+14155238886',
+            body=answer,
+            to=user_number
+        )
+
+        return ('', 204)  # Réponse vide pour Twilio
+    except Exception as e:
+        logger.error(f"Erreur webhook WhatsApp : {str(e)}", exc_info=True)
         return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.errorhandler(404)
